@@ -1,0 +1,115 @@
+🔧 Triển khai theo từng chức năng (song song Backend + Frontend)
+🥇 Bước 1: Đăng ký và đăng nhập người dùng (JWT)
+🧠 Backend
+
+Tạo User model: username, email, password, role
+
+REST API:
+
+POST /api/auth/register
+
+POST /api/auth/login
+
+Dùng JWT để xác thực
+
+💻 Frontend
+
+Trang Register.jsx & Login.jsx
+
+Gọi API bằng axios
+
+Lưu token vào localStorage
+
+Sau khi đăng nhập → điều hướng theo role:
+
+Admin → /admin/menu
+
+User → /user/booking
+
+🥈 Bước 2: Trang nhập sản phẩm (menu) dành cho admin
+🧠 Backend
+
+Model Product: name, price, imageUrl, description
+
+API:
+
+GET /api/products
+
+POST /api/products
+
+PUT /api/products/{id}
+
+DELETE /api/products/{id}
+
+💻 Frontend
+
+Trang MenuAdmin.jsx
+
+Form thêm sản phẩm
+
+Bảng hiển thị menu
+
+Chức năng sửa / xóa / cập nhật
+
+🥉 Bước 3: Tạo bàn (Table) cho admin
+🧠 Backend
+
+Model Table: name, status (EMPTY, OCCUPIED, PAID)
+
+API:
+
+GET /api/tables
+
+POST /api/tables
+
+PUT /api/tables/{id} (cập nhật trạng thái)
+
+💻 Frontend
+
+Trang TableAdmin.jsx
+
+Danh sách bàn, hiển thị trạng thái bằng màu sắc
+
+Nút cập nhật trạng thái
+
+🧾 Bước 4: Đặt bàn và order món (dành cho khách)
+🧠 Backend
+
+Model Order: userId, tableId, items (productId, quantity), totalPrice, status
+
+API:
+
+POST /api/orders
+
+GET /api/orders/user
+
+PUT /api/orders/{id} (admin cập nhật trạng thái)
+
+💻 Frontend
+
+Trang BookingUser.jsx
+
+Hiển thị tất cả bàn (/api/tables)
+
+Cho phép chọn bàn trống, chọn món từ menu (/api/products)
+
+Gửi order đến API /api/orders
+
+📊 Bước 5: Trang thống kê báo cáo
+🧠 Backend
+
+API /api/report/daily
+
+Tổng số khách trong ngày
+
+Tổng doanh thu trong ngày
+
+Tổng số đơn hàng
+
+💻 Frontend
+
+Trang Report.jsx
+
+Biểu đồ hoặc bảng thống kê
+
+Tổng kết doanh thu, số lượng khách
