@@ -6,13 +6,16 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.List;
 
 @Component
 public class JwtAuthFilter extends OncePerRequestFilter {
@@ -44,11 +47,21 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         username = jwt.getSubject(token);
 
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            var userDetails = uds.loadUserByUsername(username);
-            var authToken = new UsernamePasswordAuthenticationToken(
-                    userDetails, null, userDetails.getAuthorities());
+            UserDetails userDetails = uds.loadUserByUsername(username);
+
+            // ✅ Lấy role từ token và thêm prefix ROLE_
+            String role = jwt.extractRole(token);
+            SimpleGrantedAuthority authority = new SimpleGrantedAuthority("ROLE_" + role.toUpperCase());
+
+            UsernamePasswordAuthenticationToken authToken =
+                    new UsernamePasswordAuthenticationToken(userDetails, null, List.of(authority));
+
             authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
             SecurityContextHolder.getContext().setAuthentication(authToken);
+
+            // ✅ Log kiểm tra authority thực tế mà Spring nhận
+            System.out.println("🧩 Token user=" + username + " | role=" + role);
+            System.out.println("✅ Granted Authorities: " + authToken.getAuthorities());
         }
 
         filterChain.doFilter(request, response);

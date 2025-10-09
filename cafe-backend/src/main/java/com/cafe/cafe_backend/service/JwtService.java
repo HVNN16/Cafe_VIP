@@ -1,12 +1,14 @@
 package com.cafe.cafe_backend.service;
 
-import java.util.Date;
-import java.util.Map;
-import javax.crypto.SecretKey;
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+
+import javax.crypto.SecretKey;
+import java.util.Date;
+import java.util.Map;
 
 @Service
 public class JwtService {
@@ -37,5 +39,15 @@ public class JwtService {
                 .parseSignedClaims(token)
                 .getPayload()
                 .getSubject();
+    }
+
+    // ✅ Hàm đọc role từ JWT
+    public String extractRole(String token) {
+        Claims claims = Jwts.parser()
+                .verifyWith(key)
+                .build()
+                .parseSignedClaims(token)
+                .getPayload();
+        return (String) claims.get("role");
     }
 }
