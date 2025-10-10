@@ -8,8 +8,11 @@ import MenuAdmin from "./pages/MenuAdmin";
 import TableList from "./pages/TableList";
 import TableAdmin from "./pages/TableAdmin";
 import OrderCreate from "./pages/OrderCreate.jsx";
+import OrderPage from "./pages/OrderPage";
+import OrderAdmin from "./pages/admin/OrderAdmin.jsx";
+import Dashboard from "./pages/admin/Dashboard.jsx";
 
-// ✅ Hàm tiện ích kiểm tra login và quyền
+// ✅ Kiểm tra login & role
 const isAuthenticated = () => {
   const token = localStorage.getItem("token");
   return token && token !== "null" && token !== "undefined";
@@ -17,11 +20,12 @@ const isAuthenticated = () => {
 
 const getRole = () => localStorage.getItem("role");
 
-// ✅ Route bảo vệ
+// ✅ Route bảo vệ user
 function PrivateRoute({ children }) {
   return isAuthenticated() ? children : <Navigate to="/login" replace />;
 }
 
+// ✅ Route bảo vệ admin
 function AdminRoute({ children }) {
   const role = getRole();
   if (!isAuthenticated()) return <Navigate to="/login" replace />;
@@ -37,15 +41,19 @@ export default function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
 
-          {/* 🏠 User */}
+          {/* 🏠 USER */}
           <Route path="/home" element={<PrivateRoute><Home /></PrivateRoute>} />
           <Route path="/menu" element={<PrivateRoute><MenuUser /></PrivateRoute>} />
           <Route path="/tables" element={<PrivateRoute><TableList /></PrivateRoute>} />
+          <Route path="/order/:tableId" element={<PrivateRoute><OrderCreate /></PrivateRoute>} />
 
-          {/* 🧾 Admin */}
+          {/* 🧾 ADMIN */}
           <Route path="/menu-admin" element={<AdminRoute><MenuAdmin /></AdminRoute>} />
           <Route path="/table-admin" element={<AdminRoute><TableAdmin /></AdminRoute>} />
-          <Route path="/order/:tableId" element={<OrderCreate />} />
+          <Route path="/admin/order/:tableId" element={<AdminRoute><OrderPage /></AdminRoute>} />
+          <Route path="/admin/orders" element={<AdminRoute><OrderAdmin /></AdminRoute>} />
+          <Route path="/admin/dashboard" element={<AdminRoute><Dashboard /></AdminRoute>} />
+
 
           {/* 🔄 Mặc định */}
           <Route path="*" element={<Navigate to="/login" replace />} />
