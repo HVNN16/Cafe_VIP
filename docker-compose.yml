@@ -1,0 +1,30 @@
+version: "3.8"
+
+services:
+  backend:
+    build:
+      context: ./cafe-backend
+    container_name: cafe_backend
+    ports:
+      - "8080:8080"
+    environment:
+      # ✅ Bật TLS để kết nối Atlas an toàn
+      - "SPRING_DATA_MONGODB_URI=mongodb+srv://vannghia16062004_db_user:hG1HPlN4lCn7VCgr@cluster0.mxamdtc.mongodb.net/cafedb?retryWrites=true&w=majority&tls=true"
+      - SERVER_PORT=8080
+    networks:
+      - cafe-net
+
+  frontend:
+    build:
+      context: ./frontend
+    container_name: cafe_frontend
+    ports:
+      - "5173:80"
+    depends_on:
+      - backend
+    networks:
+      - cafe-net
+
+networks:
+  cafe-net:
+    driver: bridge
